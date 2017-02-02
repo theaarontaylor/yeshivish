@@ -1,0 +1,280 @@
+<html>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.3.1/css/bulma.css" />
+<link rel="stylesheet" href="style.css" />
+<body>
+  
+  <div id="app">
+    <nav class="nav box">
+    <div class="nav-left">
+      <div class="nav-item">
+        <h4 class="title is-4">Sounds Yeshivish but Okay</h4>
+      </div>
+    </div>
+
+    <!-- This "nav-menu" is hidden on mobile -->
+    <!-- Add the modifier "is-active" to display it on mobile -->
+    <div class="nav-right nav-menu">
+      <span class="nav-item">
+        <a class="button is-info">
+          <span>Share on Facebook</span>
+        </a>
+      </span>
+    </div>
+  </nav>
+    <div class="intro" v-show="questionIndex < 0">
+      <p>{{ quiz.intro }}</p>
+    </div>
+    <div v-show="questionIndex < 0" class="start">
+      <a class="button is-info start-button" v-on:click="next">
+          <span>Start</span>
+        </a>
+    </div>
+    <!-- index is used to check with current question index -->
+    <div v-for="(question, index) in quiz.questions">
+      <div v-show="index === questionIndex" class="question container">
+          <div>
+            <h4 class="title is-4">{{ question.text }}</h4>
+            <ul>
+              <li v-for="response in question.responses">
+                <label class="box response">
+                  <!-- The radio button has three new directives -->
+                  <!-- v-bind:value sets "value" to "true" if the response is correct -->
+                  <!-- v-bind:name sets "name" to question index to group answers by question -->
+                  <!-- v-model creates binding with userResponses -->
+                  <input type="radio" 
+                        v-bind:value="response.correct" 
+                        v-bind:name="index" 
+                        v-model="userResponses[index]"><h4 class="title is-4 inline">{{ response.text }}</h4>
+                </label>
+              </li>
+            </ul>
+            <!-- The two navigation buttons -->
+            <!-- Note: prev is hidden on first question -->
+            <div class="buttons">
+              <a class="button is-large" v-if="questionIndex > 0" v-on:click="prev">
+                Previous
+              </a>
+              <a class="button is-large is-info" v-on:click="next">
+                Next
+              </a>
+            </div>
+      </div>
+    </div>
+
+      <!-- Hide all questions, show only the one with index === to current question index -->
+    </div>
+    <div v-show="questionIndex === quiz.questions.length" class="box question">
+      <h4 class="title is-4">Quiz Finished</h4>
+      <h5 class="title is-5">
+        Total score: {{ score() }} / {{ quiz.questions.length }}
+      </h5>
+      <a class="button is-info">
+          <span>Share on Facebook</span>
+        </a>
+        <a class="button" v-on:click="questionIndex = 0">
+          <span>Try Again</span>
+        </a>
+    </div>
+  </div>
+  
+  <!-- Load Vue script -->
+  <script src="https://vuejs.org/js/vue.js"></script>
+  <!-- On load, init Vue -->
+  <script>
+    window.onload=function(){
+      // Create a quiz object with a title and two questions.
+      // A question has one or more answer, and one or more is valid.
+      var quiz = {
+        intro: 'This farher is to see who is fluent in yeshivishe shprach, and who is mammesh a goy. If you don’t know who Baruch Levine is, leave now. If you’ve never sat front row at Uncle Moishy, you should just exit the page. If you have never eaten 2 week old cookies or 3 week old potato kugel because it was on the hefker table in your yeshiva by the water cooler, you might as well go. And if you’re seeing this, it means you are on a computer and therefore are chayav misah mammesh. Now, Vayter…',
+        questions: [
+          {
+            text: "Moishe, you’re saying sooo good. I _____, I ______. What a Chiddush!",
+            responses: [
+              {text: 'chap', correct: true}, 
+              {text: 'shtim'}, 
+              {text: 'grada'}, 
+            ]
+          }, {
+            text: "Uh! Big Yesoid! _________, I see what you’re saying, but _______ it won’t work.",
+            responses: [
+              {text: 'takke/le’maisah', correct: true}, 
+              {text: 'Mammesh/lich’oirah'}, 
+              {text: 'Mammesh/Ein Hachi Nami'} 
+            ]
+          },
+          {
+            text: "I went to Kosher Castle because you said the burgers were on sale but _________they were double the price! How does that even happen?",
+            responses: [
+              {text: 'Punkt Far Kert', correct: true}, 
+              {text: 'the Metzias Was'}
+            ]
+          },
+          {
+            text: "Sholom is OTD now. What a _______! He was mammesh a _______!",
+            responses: [
+              {text: 'menuval/rosha merusha'}, 
+              {text: 'chaval/illuy', correct: true}, 
+            ]
+          },
+          {
+            text: "Eli thinks he’s a _______ ever since his ______ _______ him a Borsalino for Shabbos.",
+            responses: [
+              {text: 'macher/tatte/chapped', correct: true}, 
+              {text: 'macher/shver/fressed'}
+            ]
+          },
+          {
+            text: "I lost my Chiddushei HaGriz, but I have siman from my ______",
+            responses: [
+              {text: 'Yeshiva', correct: true}, 
+              {text: 'Shtemple'}
+            ]
+          },
+          {
+            text: "I didn’t chap what was happening. In the middle of Shmoinah Esrei some _______ _______ on the _______ and screamed “Hallel!”",
+            responses: [
+              {text: 'Shtunk/potched/aroin'}, 
+              {text: 'Am Ha’Aretz/Clopped/Shulchan', correct: true}
+            ]
+          },
+          {
+            text: "The cholent was takke ______, but not _______ to _____ like a _______.",
+            responses: [
+              {text: 'Moiradik/afilu hachi/machlokes/shaygetz'}, 
+              {text: 'geshmak/ad kedai kach/fress/vildechaya', correct: true}
+            ]
+          },
+          {
+            text: "The _______ in front of me was not _______. Mammesh a ______.",
+            responses: [
+              {text: 'maidel/ aidel/Farbissener', correct: true}, 
+              {text: 'bochur/menschledik/chaval'}
+            ]
+          },
+          {
+            text: "After eating so much kishke at the ______, I feel a _____ ______.",
+            responses: [
+              {text: 'Tisch/Shtickle/Krank', correct: true}, 
+              {text: 'Farbrengen/Groise/Mechaye'}
+            ]
+          },
+          {
+            text: "My little Yanky said he wanted to go to college. What ____! I told him he was going to Ner Yisroel like his  _______.",
+            responses: [
+              {text: 'Narishkeit/tatte', correct: true}, 
+              {text: 'Bubbamaisah/zaide'}
+            ]
+          },
+          {
+            text: "In the beis, the New York guys love the ______. I mammesh can’t learn!",
+            responses: [
+              {text: 'Learning'}, 
+              {text: 'Hock', correct: true}
+            ]
+          },
+          {
+            text: "Every time I take out my sour sticks, everyone becomes a _______. There’s never any left for me!",
+            responses: [
+              {text: 'Shtunk'}, 
+              {text: 'Schnorrer', correct: true}
+            ]
+          },
+          {
+            text: 'I got nervous when the head of the country club asked me what religion I was because I knew they don’t let in Jews, so I answered “Eh, ya know, ______."',
+            responses: [
+              {text: 'A Pashute Yid'}, 
+              {text: 'Goyyish', correct: true}
+            ]
+          },
+          {
+            text: "I asked if we could sing some niggunim but he scream “No!” … what a ____ ______",
+            responses: [
+              {text: 'Klater Litvak', correct: true}, 
+              {text: 'Heimish Chosid'}
+            ]
+          },
+          {
+            text: "He’s in the Rosh Yeshiva’s shiur, Only Shana alef, and already at the _____.",
+            responses: [
+              {text: 'Shpitz', correct: true}, 
+              {text: 'Talmid Chacham'}
+            ]
+          },
+          {
+            text: "I went to a Chabad seudah and had no idea what they were saying. It was like yeshivish but not. Asking if I wanted _____ or ______. Weird!",
+            responses: [
+              {text: 'Mashke/Nosh', correct: true}, 
+              {text: 'Kugel/Cholent'}
+            ]
+          },
+          {
+            text: "When our tire popped on the way to Shacharis, my Tatte started walking. When I asked him if he was on his way to minyan, he said, “_________? It’s 71 minutes away. It’s a _____!”",
+            responses: [
+              {text: 'Aderaba/chillul Hashem'}, 
+              {text: 'Eilah Mai/Chiyuv', correct: true}
+            ]
+          },
+          {
+            text: "The name of the choir in shul should have been ______. Those guys stunk! And what was that Kedusha Niggun? Sounded like the Godfather theme. Not that I would know what that is… *laughs nervously*",
+            responses: [
+              {text: 'Botel B’Shishim'}, 
+              {text: 'Tircha D’Tzibora', correct: true}
+            ]
+          },
+          {
+            text: "The food was ______. Couldn’t even look at it.",
+            responses: [
+              {text: 'Eckeldik', correct: true}, 
+              {text: 'a Gevalt'}
+            ]
+          },
+          {
+            text: "Where were you __ Shabbos?",
+            responses: [
+              {text: 'at'}, 
+              {text: 'in'},
+              {text: 'with'},
+              {text: 'by', correct: true},
+              {text: 'for'},
+              {text: 'on'}
+            ]
+          },
+          {
+            text: "Yeush SheLo MiDaas. Abaye Amar ________ V’Rava Amar ______.",
+            responses: [
+              {text: 'Hevey Yeush/Lo Hevey Yeush',},
+              {text: 'Lo Hevey Yeush/Hevey Yeush', correct: true}
+            ]
+          }
+        ]
+      };
+            
+      new Vue({
+        el: '#app',
+        data: {
+          quiz: quiz,
+          // Store current question index
+          questionIndex: -1,
+          // An array initialized with "false" values for each question
+          // It means: "did the user answered correctly to the question n?" "no".
+          userResponses: Array(quiz.questions.length).fill(false)
+        },
+        // The view will trigger these methods on click
+        methods: {
+          // Go to next question
+          next: function() {
+            this.questionIndex++;
+          },
+          // Go to previous question
+          prev: function() {
+            this.questionIndex--;
+          },
+          // Return "true" count in userResponses
+          score: function() {
+            return this.userResponses.filter(function(val) { return val }).length;
+          }
+        }
+      });
+    }
+  </script>
+</body>
