@@ -31,7 +31,7 @@
     </div>
     <!-- index is used to check with current question index -->
     <div v-for="(question, index) in quiz.questions">
-      <div v-show="index === questionIndex" class="question container">
+      <div v-show="index === questionIndex" class="question">
           <div>
             <h4 class="title is-4">{{ question.text }}</h4>
             <ul>
@@ -50,11 +50,11 @@
             </ul>
             <!-- The two navigation buttons -->
             <!-- Note: prev is hidden on first question -->
-            <div class="buttons">
-              <a class="button is-large" v-if="questionIndex > 0" v-on:click="prev">
+            <div class="buttons columns">
+              <a class="button is-large nav-btn column" v-if="questionIndex > 0" v-on:click="prev">
                 Previous
               </a>
-              <a class="button is-large is-info" v-on:click="next">
+              <a class="button is-large is-info nav-btn column" v-on:click="next">
                 Next
               </a>
             </div>
@@ -64,7 +64,18 @@
       <!-- Hide all questions, show only the one with index === to current question index -->
     </div>
     <div v-show="questionIndex === quiz.questions.length" class="box question">
-      <h4 class="title is-4">Quiz Finished</h4>
+      <div v-show="score() < 5" class="rank has-text-centered">
+        <h5 class="title is-2">Not holding bichlal</h5>
+      </div>
+      <div v-show="score() > 4 && score() < 15" class="rank">
+        Am Ha'Aretz
+      </div>
+      <div v-show="score() > 14 && score() < 20" class="rank">
+        Almost frum
+      </div>
+      <div v-show="score() > 19" class="rank">
+        Fluency level: Kiddish club star
+      </div>
       <h5 class="title is-5">
         Total score: {{ score() }} / {{ quiz.questions.length }}
       </h5>
