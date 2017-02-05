@@ -52,10 +52,10 @@
             <!-- The two navigation buttons -->
             <!-- Note: prev is hidden on first question -->
             <div class="buttons columns">
-              <a class="button is-large nav-btn column" v-if="questionIndex > 0" v-on:click="prev">
+              <a class="button is-large prev-btn column" v-if="questionIndex > 0" v-on:click="prev">
                 Previous
               </a>
-              <a class="button is-large is-info nav-btn column" v-on:click="next">
+              <a class="button is-large is-info next-btn column" v-on:click="next">
                 Next
               </a>
             </div>
