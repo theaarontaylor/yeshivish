@@ -49,8 +49,14 @@ body {
     float: right;
 }
 
-@media (min-width: 400px) {
-    .nav-btn {
-        height: 200px;
-    }
+input[type="radio"]:checked ~ h4 {
+    font-weight: 700;
+}
+
+input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  -moz-opacity: 0;
+  -webkit-opacity: 0;
+  -o-opacity: 0;
 }
